@@ -1,0 +1,526 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="KladionicaModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Bet">
+          <Key>
+            <PropertyRef Name="BetID" />
+          </Key>
+          <Property Name="BetID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Mark" Type="char" MaxLength="10" Nullable="false" />
+          <Property Name="Odds" Type="float" Nullable="false" />
+          <Property Name="EventID" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Event">
+          <Key>
+            <PropertyRef Name="EventID" />
+          </Key>
+          <Property Name="EventID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="SublistID" Type="int" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Outcome" Type="char" MaxLength="10" />
+          <Property Name="OriginalEventID" Type="int" />
+          <Property Name="Time" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="List">
+          <Key>
+            <PropertyRef Name="ListID" />
+          </Key>
+          <Property Name="ListID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Date" Type="datetime" Nullable="false" />
+          <Property Name="Time" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Saldo">
+          <Key>
+            <PropertyRef Name="SaldoID" />
+          </Key>
+          <Property Name="Amount" Type="float" Nullable="false" />
+          <Property Name="SaldoID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Difference" Type="float" Nullable="false" />
+          <Property Name="TimeStamp" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Sport">
+          <Key>
+            <PropertyRef Name="SportID" />
+          </Key>
+          <Property Name="SportID" Type="int" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Sublist">
+          <Key>
+            <PropertyRef Name="SublistID" />
+          </Key>
+          <Property Name="SublistID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ListID" Type="int" Nullable="false" />
+          <Property Name="SportID" Type="int" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Ticket">
+          <Key>
+            <PropertyRef Name="TicketID" />
+          </Key>
+          <Property Name="TicketID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Date" Type="datetime" Nullable="false" />
+          <Property Name="Wager" Type="float" Nullable="false" />
+          <Property Name="Status" Type="int" Nullable="false" />
+          <Property Name="TotalOdds" Type="float" Nullable="false" />
+          <Property Name="Gain" Type="float" Nullable="false" />
+        </EntityType>
+        <EntityType Name="TicketItem">
+          <Key>
+            <PropertyRef Name="TicketItemID" />
+          </Key>
+          <Property Name="TicketItemID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="BetID" Type="int" Nullable="false" />
+          <Property Name="TicketID" Type="int" Nullable="false" />
+          <Property Name="Status" Type="int" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_Bet_Event">
+          <End Role="Event" Type="Self.Event" Multiplicity="1" />
+          <End Role="Bet" Type="Self.Bet" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Event">
+              <PropertyRef Name="EventID" />
+            </Principal>
+            <Dependent Role="Bet">
+              <PropertyRef Name="EventID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Event_Sublist">
+          <End Role="Sublist" Type="Self.Sublist" Multiplicity="1" />
+          <End Role="Event" Type="Self.Event" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Sublist">
+              <PropertyRef Name="SublistID" />
+            </Principal>
+            <Dependent Role="Event">
+              <PropertyRef Name="SublistID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_OriginalEvent_Event">
+          <End Role="Event" Type="Self.Event" Multiplicity="0..1" />
+          <End Role="Event1" Type="Self.Event" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Event">
+              <PropertyRef Name="EventID" />
+            </Principal>
+            <Dependent Role="Event1">
+              <PropertyRef Name="OriginalEventID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Sublist_List">
+          <End Role="List" Type="Self.List" Multiplicity="1" />
+          <End Role="Sublist" Type="Self.Sublist" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="List">
+              <PropertyRef Name="ListID" />
+            </Principal>
+            <Dependent Role="Sublist">
+              <PropertyRef Name="ListID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Sublist_Sport">
+          <End Role="Sport" Type="Self.Sport" Multiplicity="1" />
+          <End Role="Sublist" Type="Self.Sublist" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Sport">
+              <PropertyRef Name="SportID" />
+            </Principal>
+            <Dependent Role="Sublist">
+              <PropertyRef Name="SportID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TicketItem_Bet">
+          <End Role="Bet" Type="Self.Bet" Multiplicity="1" />
+          <End Role="TicketItem" Type="Self.TicketItem" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Bet">
+              <PropertyRef Name="BetID" />
+            </Principal>
+            <Dependent Role="TicketItem">
+              <PropertyRef Name="BetID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TicketItem_Ticket">
+          <End Role="Ticket" Type="Self.Ticket" Multiplicity="1" />
+          <End Role="TicketItem" Type="Self.TicketItem" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Ticket">
+              <PropertyRef Name="TicketID" />
+            </Principal>
+            <Dependent Role="TicketItem">
+              <PropertyRef Name="TicketID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="KladionicaModelStoreContainer">
+          <EntitySet Name="Bet" EntityType="Self.Bet" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Event" EntityType="Self.Event" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="List" EntityType="Self.List" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Saldo" EntityType="Self.Saldo" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Sport" EntityType="Self.Sport" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Sublist" EntityType="Self.Sublist" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Ticket" EntityType="Self.Ticket" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TicketItem" EntityType="Self.TicketItem" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Bet_Event" Association="Self.FK_Bet_Event">
+            <End Role="Event" EntitySet="Event" />
+            <End Role="Bet" EntitySet="Bet" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Event_Sublist" Association="Self.FK_Event_Sublist">
+            <End Role="Sublist" EntitySet="Sublist" />
+            <End Role="Event" EntitySet="Event" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OriginalEvent_Event" Association="Self.FK_OriginalEvent_Event">
+            <End Role="Event" EntitySet="Event" />
+            <End Role="Event1" EntitySet="Event" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Sublist_List" Association="Self.FK_Sublist_List">
+            <End Role="List" EntitySet="List" />
+            <End Role="Sublist" EntitySet="Sublist" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Sublist_Sport" Association="Self.FK_Sublist_Sport">
+            <End Role="Sport" EntitySet="Sport" />
+            <End Role="Sublist" EntitySet="Sublist" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TicketItem_Bet" Association="Self.FK_TicketItem_Bet">
+            <End Role="Bet" EntitySet="Bet" />
+            <End Role="TicketItem" EntitySet="TicketItem" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TicketItem_Ticket" Association="Self.FK_TicketItem_Ticket">
+            <End Role="Ticket" EntitySet="Ticket" />
+            <End Role="TicketItem" EntitySet="TicketItem" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="KladionicaModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="KladionicaEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Bet" EntityType="KladionicaModel.Bet" />
+          <EntitySet Name="Event" EntityType="KladionicaModel.Event" />
+          <EntitySet Name="List" EntityType="KladionicaModel.List" />
+          <EntitySet Name="Saldo" EntityType="KladionicaModel.Saldo" />
+          <EntitySet Name="Sport" EntityType="KladionicaModel.Sport" />
+          <EntitySet Name="Sublist" EntityType="KladionicaModel.Sublist" />
+          <EntitySet Name="Ticket" EntityType="KladionicaModel.Ticket" />
+          <EntitySet Name="TicketItem" EntityType="KladionicaModel.TicketItem" />
+          <AssociationSet Name="FK_Bet_Event" Association="KladionicaModel.FK_Bet_Event">
+            <End Role="Event" EntitySet="Event" />
+            <End Role="Bet" EntitySet="Bet" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TicketItem_Bet" Association="KladionicaModel.FK_TicketItem_Bet">
+            <End Role="Bet" EntitySet="Bet" />
+            <End Role="TicketItem" EntitySet="TicketItem" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Event_Sublist" Association="KladionicaModel.FK_Event_Sublist">
+            <End Role="Sublist" EntitySet="Sublist" />
+            <End Role="Event" EntitySet="Event" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OriginalEvent_Event" Association="KladionicaModel.FK_OriginalEvent_Event">
+            <End Role="Event" EntitySet="Event" />
+            <End Role="Event1" EntitySet="Event" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Sublist_List" Association="KladionicaModel.FK_Sublist_List">
+            <End Role="List" EntitySet="List" />
+            <End Role="Sublist" EntitySet="Sublist" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Sublist_Sport" Association="KladionicaModel.FK_Sublist_Sport">
+            <End Role="Sport" EntitySet="Sport" />
+            <End Role="Sublist" EntitySet="Sublist" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TicketItem_Ticket" Association="KladionicaModel.FK_TicketItem_Ticket">
+            <End Role="Ticket" EntitySet="Ticket" />
+            <End Role="TicketItem" EntitySet="TicketItem" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="Bet">
+          <Key>
+            <PropertyRef Name="BetID" />
+          </Key>
+          <Property Name="BetID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Mark" Type="String" Nullable="false" MaxLength="10" FixedLength="true" Unicode="false" />
+          <Property Name="Odds" Type="Double" Nullable="false" />
+          <Property Name="EventID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Event" Relationship="KladionicaModel.FK_Bet_Event" FromRole="Bet" ToRole="Event" />
+          <NavigationProperty Name="TicketItem" Relationship="KladionicaModel.FK_TicketItem_Bet" FromRole="Bet" ToRole="TicketItem" />
+        </EntityType>
+        <EntityType Name="Event">
+          <Key>
+            <PropertyRef Name="EventID" />
+          </Key>
+          <Property Name="EventID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="SublistID" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Outcome" Type="String" MaxLength="10" FixedLength="true" Unicode="false" />
+          <Property Name="OriginalEventID" Type="Int32" />
+          <Property Name="Time" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="Bet" Relationship="KladionicaModel.FK_Bet_Event" FromRole="Event" ToRole="Bet" />
+          <NavigationProperty Name="Sublist" Relationship="KladionicaModel.FK_Event_Sublist" FromRole="Event" ToRole="Sublist" />
+          <NavigationProperty Name="Event1" Relationship="KladionicaModel.FK_OriginalEvent_Event" FromRole="Event" ToRole="Event1" />
+          <NavigationProperty Name="Event2" Relationship="KladionicaModel.FK_OriginalEvent_Event" FromRole="Event1" ToRole="Event" />
+        </EntityType>
+        <EntityType Name="List">
+          <Key>
+            <PropertyRef Name="ListID" />
+          </Key>
+          <Property Name="ListID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Date" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Time" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="Sublist" Relationship="KladionicaModel.FK_Sublist_List" FromRole="List" ToRole="Sublist" />
+        </EntityType>
+        <EntityType Name="Saldo">
+          <Key>
+            <PropertyRef Name="SaldoID" />
+          </Key>
+          <Property Name="Amount" Type="Double" Nullable="false" />
+          <Property Name="SaldoID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Difference" Type="Double" Nullable="false" />
+          <Property Name="TimeStamp" Type="DateTime" Nullable="false" Precision="3" />
+        </EntityType>
+        <EntityType Name="Sport">
+          <Key>
+            <PropertyRef Name="SportID" />
+          </Key>
+          <Property Name="SportID" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Sublist" Relationship="KladionicaModel.FK_Sublist_Sport" FromRole="Sport" ToRole="Sublist" />
+        </EntityType>
+        <EntityType Name="Sublist">
+          <Key>
+            <PropertyRef Name="SublistID" />
+          </Key>
+          <Property Name="SublistID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ListID" Type="Int32" Nullable="false" />
+          <Property Name="SportID" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Event" Relationship="KladionicaModel.FK_Event_Sublist" FromRole="Sublist" ToRole="Event" />
+          <NavigationProperty Name="List" Relationship="KladionicaModel.FK_Sublist_List" FromRole="Sublist" ToRole="List" />
+          <NavigationProperty Name="Sport" Relationship="KladionicaModel.FK_Sublist_Sport" FromRole="Sublist" ToRole="Sport" />
+        </EntityType>
+        <EntityType Name="Ticket">
+          <Key>
+            <PropertyRef Name="TicketID" />
+          </Key>
+          <Property Name="TicketID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Date" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Wager" Type="Double" Nullable="false" />
+          <Property Name="Status" Type="Int32" Nullable="false" />
+          <Property Name="TotalOdds" Type="Double" Nullable="false" />
+          <Property Name="Gain" Type="Double" Nullable="false" />
+          <NavigationProperty Name="TicketItem" Relationship="KladionicaModel.FK_TicketItem_Ticket" FromRole="Ticket" ToRole="TicketItem" />
+        </EntityType>
+        <EntityType Name="TicketItem">
+          <Key>
+            <PropertyRef Name="TicketItemID" />
+          </Key>
+          <Property Name="TicketItemID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="BetID" Type="Int32" Nullable="false" />
+          <Property Name="TicketID" Type="Int32" Nullable="false" />
+          <Property Name="Status" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Bet" Relationship="KladionicaModel.FK_TicketItem_Bet" FromRole="TicketItem" ToRole="Bet" />
+          <NavigationProperty Name="Ticket" Relationship="KladionicaModel.FK_TicketItem_Ticket" FromRole="TicketItem" ToRole="Ticket" />
+        </EntityType>
+        <Association Name="FK_Bet_Event">
+          <End Type="KladionicaModel.Event" Role="Event" Multiplicity="1" />
+          <End Type="KladionicaModel.Bet" Role="Bet" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Event">
+              <PropertyRef Name="EventID" />
+            </Principal>
+            <Dependent Role="Bet">
+              <PropertyRef Name="EventID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TicketItem_Bet">
+          <End Type="KladionicaModel.Bet" Role="Bet" Multiplicity="1" />
+          <End Type="KladionicaModel.TicketItem" Role="TicketItem" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Bet">
+              <PropertyRef Name="BetID" />
+            </Principal>
+            <Dependent Role="TicketItem">
+              <PropertyRef Name="BetID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Event_Sublist">
+          <End Type="KladionicaModel.Sublist" Role="Sublist" Multiplicity="1" />
+          <End Type="KladionicaModel.Event" Role="Event" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Sublist">
+              <PropertyRef Name="SublistID" />
+            </Principal>
+            <Dependent Role="Event">
+              <PropertyRef Name="SublistID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_OriginalEvent_Event">
+          <End Type="KladionicaModel.Event" Role="Event" Multiplicity="0..1" />
+          <End Type="KladionicaModel.Event" Role="Event1" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Event">
+              <PropertyRef Name="EventID" />
+            </Principal>
+            <Dependent Role="Event1">
+              <PropertyRef Name="OriginalEventID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Sublist_List">
+          <End Type="KladionicaModel.List" Role="List" Multiplicity="1" />
+          <End Type="KladionicaModel.Sublist" Role="Sublist" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="List">
+              <PropertyRef Name="ListID" />
+            </Principal>
+            <Dependent Role="Sublist">
+              <PropertyRef Name="ListID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Sublist_Sport">
+          <End Type="KladionicaModel.Sport" Role="Sport" Multiplicity="1" />
+          <End Type="KladionicaModel.Sublist" Role="Sublist" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Sport">
+              <PropertyRef Name="SportID" />
+            </Principal>
+            <Dependent Role="Sublist">
+              <PropertyRef Name="SportID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TicketItem_Ticket">
+          <End Type="KladionicaModel.Ticket" Role="Ticket" Multiplicity="1" />
+          <End Type="KladionicaModel.TicketItem" Role="TicketItem" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Ticket">
+              <PropertyRef Name="TicketID" />
+            </Principal>
+            <Dependent Role="TicketItem">
+              <PropertyRef Name="TicketID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="KladionicaModelStoreContainer" CdmEntityContainer="KladionicaEntities">
+          <EntitySetMapping Name="Bet">
+            <EntityTypeMapping TypeName="KladionicaModel.Bet">
+              <MappingFragment StoreEntitySet="Bet">
+                <ScalarProperty Name="EventID" ColumnName="EventID" />
+                <ScalarProperty Name="Odds" ColumnName="Odds" />
+                <ScalarProperty Name="Mark" ColumnName="Mark" />
+                <ScalarProperty Name="BetID" ColumnName="BetID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Event">
+            <EntityTypeMapping TypeName="KladionicaModel.Event">
+              <MappingFragment StoreEntitySet="Event">
+                <ScalarProperty Name="Time" ColumnName="Time" />
+                <ScalarProperty Name="OriginalEventID" ColumnName="OriginalEventID" />
+                <ScalarProperty Name="Outcome" ColumnName="Outcome" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="SublistID" ColumnName="SublistID" />
+                <ScalarProperty Name="EventID" ColumnName="EventID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="List">
+            <EntityTypeMapping TypeName="KladionicaModel.List">
+              <MappingFragment StoreEntitySet="List">
+                <ScalarProperty Name="Time" ColumnName="Time" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="ListID" ColumnName="ListID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Saldo">
+            <EntityTypeMapping TypeName="KladionicaModel.Saldo">
+              <MappingFragment StoreEntitySet="Saldo">
+                <ScalarProperty Name="TimeStamp" ColumnName="TimeStamp" />
+                <ScalarProperty Name="Difference" ColumnName="Difference" />
+                <ScalarProperty Name="SaldoID" ColumnName="SaldoID" />
+                <ScalarProperty Name="Amount" ColumnName="Amount" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Sport">
+            <EntityTypeMapping TypeName="KladionicaModel.Sport">
+              <MappingFragment StoreEntitySet="Sport">
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="SportID" ColumnName="SportID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Sublist">
+            <EntityTypeMapping TypeName="KladionicaModel.Sublist">
+              <MappingFragment StoreEntitySet="Sublist">
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="SportID" ColumnName="SportID" />
+                <ScalarProperty Name="ListID" ColumnName="ListID" />
+                <ScalarProperty Name="SublistID" ColumnName="SublistID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Ticket">
+            <EntityTypeMapping TypeName="KladionicaModel.Ticket">
+              <MappingFragment StoreEntitySet="Ticket">
+                <ScalarProperty Name="Gain" ColumnName="Gain" />
+                <ScalarProperty Name="TotalOdds" ColumnName="TotalOdds" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Wager" ColumnName="Wager" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="TicketID" ColumnName="TicketID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TicketItem">
+            <EntityTypeMapping TypeName="KladionicaModel.TicketItem">
+              <MappingFragment StoreEntitySet="TicketItem">
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="TicketID" ColumnName="TicketID" />
+                <ScalarProperty Name="BetID" ColumnName="BetID" />
+                <ScalarProperty Name="TicketItemID" ColumnName="TicketItemID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
